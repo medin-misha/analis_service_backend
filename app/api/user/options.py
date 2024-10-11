@@ -11,7 +11,7 @@ async def get_all_users(session: AsyncSession) -> List[ReturnUser]:
     return result.scalars().all()
 
 
-async def get_user_by_id(session: AsyncSession, user_id: int) -> ReturnUser:
+async def get_user_by_id(session: AsyncSession, user_id: int) -> ReturnUser | None:
     stmt = select(User).where(User.id == user_id).order_by(User.id)
     result: Result = await session.execute(stmt)
     return result.scalar()
@@ -30,10 +30,10 @@ async def create_user(session: AsyncSession, user_data: CreateUser) -> ReturnUse
 
 async def patch_user(
     session: AsyncSession, user_id: int, user_data: PatchUser
-) -> ReturnUser | int:
+) -> ReturnUser | None:
     user = await session.get(User, user_id)
     if user is None:
-        return 404
+        return None
     for key, value in user_data.model_dump(exclude_unset=True).items():
         setattr(user, key, value)
     await session.commit()
@@ -41,13 +41,10 @@ async def patch_user(
     return ReturnUser(**user.__dict__)
 
 
-async def delete_user(session: AsyncSession, user_id: int) -> int:
-    if user_id == -2:
-        async with session.begin():
-            stmt = delete(User).where(User.id)
-            await session.execute(stmt)
-        return 204
-    async with session.begin():
-        stmt = delete(User).where(User.id == user_id)
-        await session.execute(stmt)
-        return 204
+async def delete_user(session: AsyncSession, user_id: int) -> int | None:
+    user = await session.get(User, user_id)
+    if user is None:
+        return 
+    await session.delete(user)
+    await session.commit()
+    return 204
