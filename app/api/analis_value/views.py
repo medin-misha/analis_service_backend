@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from core import database
@@ -34,7 +34,10 @@ async def get_analis_value_list_view(
 async def get_analis_value_view(
     analis_id: int, session: AsyncSession = Depends(database.get_new_session)
 ) -> ReturnAnalisValue:
-    return await get_analis_value(session=session, analis_id=analis_id)
+    object = await get_analis_value(session=session, analis_id=analis_id)
+    if object is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    return object
 
 
 @router.patch("/{analis_id}")
@@ -51,5 +54,8 @@ async def analis_value_view(
 @router.delete("/{analis_id}")
 async def analis_value_view(
     analis_id: int, session: AsyncSession = Depends(database.get_new_session)
-) -> int:
-    return await delete_analis_value(session=session, analis_id=analis_id)
+):
+    object = await delete_analis_value(session=session, analis_id=analis_id)
+    if object is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    raise HTTPException(status_code=status.HTTP_204_NO_CONTENT)

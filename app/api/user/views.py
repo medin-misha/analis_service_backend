@@ -20,10 +20,11 @@ async def get_all_users_view(
 async def get_user_by_id_view(
     user_id: int, session: AsyncSession = Depends(database.get_new_session)
 ) -> ReturnUser:
-    object =  await get_user_by_id(session=session, user_id=user_id)
+    object = await get_user_by_id(session=session, user_id=user_id)
     if object is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return object
+
 
 @router.post("/")
 async def create_user_view(
@@ -40,8 +41,9 @@ async def patch_user_view(
 ) -> ReturnUser:
     object = await patch_user(session=session, user_id=user_id, user_data=user_data)
     if object is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return object
+
 
 @router.delete("/{user_id}")
 async def delete_user_view(

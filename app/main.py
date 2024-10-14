@@ -9,6 +9,7 @@ app.include_router(analis_router)
 app.include_router(analis_value_router)
 app.include_router(analis_standart_router)
 
+
 @app.get("/make-test-db")
 async def make_test_db():
     if settings.is_test:

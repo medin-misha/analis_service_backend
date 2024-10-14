@@ -44,7 +44,7 @@ async def patch_user(
 async def delete_user(session: AsyncSession, user_id: int) -> int | None:
     user = await session.get(User, user_id)
     if user is None:
-        return 
+        return
     await session.delete(user)
     await session.commit()
     return 204

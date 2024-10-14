@@ -38,18 +38,25 @@ async def get_analis_standart(
 
 async def patch_analis_standart(
     session: AsyncSession, analis_id: int, analis_data: PatchAnalisStarndart
-) -> ReturnAnalisStarndart:
+) -> ReturnAnalisStarndart | None:
     async with session.begin():
+
         analis_standart_model = await session.get(AnalisStandart, analis_id)
+        if analis_standart_model is None:
+            return
+
         for key, value in analis_data.model_dump(exclude_unset=True).items():
             setattr(analis_standart_model, key, value)
+
         await session.commit()
     await session.refresh(analis_standart_model)
     return ReturnAnalisStarndart(**analis_standart_model.__dict__)
 
 
-async def delete_analis_standart(session: AsyncSession, analis_id: int) -> int:
-    async with session.begin():
-        await session.delete(await session.get(AnalisStandart, analis_id))
-        await session.commit()
+async def delete_analis_standart(session: AsyncSession, analis_id: int) -> int | None:
+    analis_standart = await session.get(AnalisStandart, analis_id)
+    if analis_standart is None:
+        return
+    await session.delete(analis_standart)
+    await session.commit()
     return 204

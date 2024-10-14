@@ -28,8 +28,10 @@ async def get_analis(session: AsyncSession, analis_id: int) -> ReturnAnalis:
     return result.scalar()
 
 
-async def delete_analis(session: AsyncSession, analis_id: int) -> int:
-    async with session.begin():
-        await session.delete(await session.get(Analis, analis_id))
-        await session.commit()
+async def delete_analis(session: AsyncSession, analis_id: int) -> int | None:
+    analis = await session.get(Analis, analis_id)
+    if analis is None:
+        return
+    await session.delete(analis)
+    await session.commit()
     return 204
