@@ -3,7 +3,7 @@ from httpx import Response
 
 
 def test_create_analis_value(database):
-    analis_value_data: dict = {"user_id": 1, "analis_id": 1, "value": "50"}
+    analis_value_data: dict = {"user_id": 1, "analis_id": 1, "value": "50", "date": "2024-10-19"}
     response: Response = database.post("/analis/value/", json=analis_value_data)
     assert response.json().get("id")
     assert response.status_code == 200
