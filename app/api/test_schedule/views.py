@@ -13,7 +13,9 @@ async def get_schedule_view(
     user_and_analis_ids: GetUserAndAnalis,
     session: AsyncSession = Depends(database.get_new_session),
 ) -> StreamingResponse:
-    object = await get_schedule(session=session, user_and_analis_ids=user_and_analis_ids)
+    object = await get_schedule(
+        session=session, user_and_analis_ids=user_and_analis_ids
+    )
     if object is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     elif object == "No":

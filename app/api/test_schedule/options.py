@@ -44,15 +44,19 @@ async def get_schedule(
     analis_model: List[Analis] = await get_analis_by_id(
         session=session, id=user_and_analis_ids.analis_id
     )
-    analis_values_models: List[AnalisValue] = await get_analis_value_by_user_and_analis_id(
-        session=session,
-        user_id=user_and_analis_ids.user_id,
-        analis_id=user_and_analis_ids.analis_id,
+    analis_values_models: List[AnalisValue] = (
+        await get_analis_value_by_user_and_analis_id(
+            session=session,
+            user_id=user_and_analis_ids.user_id,
+            analis_id=user_and_analis_ids.analis_id,
+        )
     )
 
-    if user_model is None or analis_model is None:
+    if user_model is None or analis_model is None or analis_values_models is None:
         return
-    elif False in [analis_value.value.isdigit() for analis_value in analis_values_models]:
+    elif  False in [
+        analis_value.value.isdigit() for analis_value in analis_values_models
+    ]:
         return "No"
 
     analis_dates: List = [
@@ -65,35 +69,37 @@ async def get_schedule(
     weight = len(analis_dates) * 5
     height = weight * 0.7
 
+    title_font_size: int = weight * 2
+    grid_linewidth: int = weight / 16.6
+    xylabel_fontsize: float = weight * 1.5
+    xticks_fontsize: float = weight * 0.9
+    yticks_fontsize: float = weight * 1.2
+    node_font_size: float = weight * 0.9
+    plot_line_width: float = weight / 10
+    plot_markersize: float = weight * 0.66
+
     plt.figure(figsize=(weight, height))
-
-    plt.title(analis_model.name, fontsize=weight * 2)
-
-    plt.grid(True, linewidth=weight / 16.6)
-
-
-    plt.xlabel("дата анализа", fontsize=weight * 1.5)
-    plt.ylabel(f"{analis_model.unit}", fontsize=weight * 1.5)
-
-    plt.xticks(rotation=30, fontsize=weight * 0.9)
-    plt.yticks(fontsize=weight * 1.2)
-
+    plt.title(analis_model.name, fontsize=title_font_size)
+    plt.grid(True, linewidth=grid_linewidth)
+    plt.xlabel("дата анализа", fontsize=xylabel_fontsize)
+    plt.ylabel(f"{analis_model.unit}", fontsize=xylabel_fontsize)
+    plt.xticks(rotation=30, fontsize=xticks_fontsize)
+    plt.yticks(fontsize=yticks_fontsize)
 
     for x, y in zip(analis_dates, analis_values):
-        plt.text(x, y, str(y), ha="left", fontsize=weight * 0.9)
-
+        plt.text(x, y, str(y), ha="left", fontsize=node_font_size)
 
     plt.plot(
         analis_dates,
         analis_values,
         "-o",
         color="#94007b",
-        linewidth=weight / 10,
-        markersize=weight * 0.66,
+        linewidth=plot_line_width,
+        markersize=plot_line_width,
     )
     byte_io = BytesIO()
 
-    plt.savefig(byte_io, format="jpeg")
+    plt.savefig(byte_io, format="png")
     byte_io.seek(0)
     plt.close()
-    return StreamingResponse(byte_io, media_type="image/jpeg", status_code=200)
+    return StreamingResponse(byte_io, media_type="image/png", status_code=200)
