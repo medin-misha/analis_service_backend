@@ -13,6 +13,10 @@ async def get_schedule_view(
     user_and_analis_ids: GetUserAndAnalis,
     session: AsyncSession = Depends(database.get_new_session),
 ) -> StreamingResponse:
+    """
+    Эта функция возвращает график с наглядным показателем дата-значение.
+    Если возвращаеться 409 - то неверные данные были в analis_value
+    """
     object = await get_schedule(
         session=session, user_and_analis_ids=user_and_analis_ids
     )
