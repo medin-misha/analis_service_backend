@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 from httpx import Response
+import random
 import pytest
 import main
 
@@ -14,8 +15,13 @@ def client():
 
 @pytest.fixture
 def database(client):
-    user_data: dict = {"name": "misha", "age": 16, "weight": 65, "gender": True}
-    analis_data: dict = {"name": "ПСА (PSA) - коефіцієнт", "unit": "%"}
+    user_data: dict = {
+        "name": f"{random.random()}",
+        "age": 16,
+        "weight": 65,
+        "gender": True,
+    }
+
     analis_value_data: dict = {
         "user_id": 1,
         "analis_id": 1,
@@ -33,6 +39,13 @@ def database(client):
     }
 
     user_create_response: Response = client.post("/users", json=user_data)
+    assert user_create_response.status_code == 200
+
+    analis_data: dict = {
+        "name": "ПСА (PSA) - коефіцієнт",
+        "unit": "%",
+        "user_id": user_create_response.json().get("id"),
+    }
     analis_create_response: Response = client.post("/analis", json=analis_data)
     # analis_standart_create_response: Response = client.post(
     #     "/analis/standart/", json=analis_standart_data
@@ -41,7 +54,6 @@ def database(client):
         "analis/value/", json=analis_value_data
     )
 
-    assert user_create_response.status_code == 200
     assert analis_create_response.status_code == 200
     # assert analis_standart_create_response.status_code == 200
     assert analis_value_create_response.status_code == 200
@@ -50,13 +62,22 @@ def database(client):
 
 @pytest.fixture
 def database_schedule(client):
-    user_data: dict = {"name": "misha", "age": 16, "weight": 65, "gender": True}
-    analis_data: dict = {"name": "ПСА (PSA) - коефіцієнт", "unit": "%"}
+    user_data: dict = {
+        "name": f"{random.random()}",
+        "age": 16,
+        "weight": 65,
+        "gender": True,
+    }
 
     user_create_response: Response = client.post("/users", json=user_data)
+    assert user_create_response.status_code == 200
+    analis_data: dict = {
+        "name": "ПСА (PSA) - коефіцієнт",
+        "unit": "%",
+        "user_id": user_create_response.json().get("id"),
+    }
     analis_create_response: Response = client.post("/analis", json=analis_data)
 
-    assert user_create_response.status_code == 200
     assert analis_create_response.status_code == 200
 
     analis_values_data: list[dict] = [

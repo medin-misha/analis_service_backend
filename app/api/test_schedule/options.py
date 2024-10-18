@@ -54,7 +54,7 @@ async def get_schedule(
 
     if user_model is None or analis_model is None or analis_values_models is None:
         return
-    elif  False in [
+    elif False in [
         analis_value.value.isdigit() for analis_value in analis_values_models
     ]:
         return "No"

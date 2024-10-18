@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result, delete
+from sqlalchemy.exc import IntegrityError
 from typing import List
 from .schemas import CreateUser, ReturnUser, PatchUser
 from core import User
@@ -17,12 +18,17 @@ async def get_user_by_id(session: AsyncSession, user_id: int) -> ReturnUser | No
     return result.scalar()
 
 
-async def create_user(session: AsyncSession, user_data: CreateUser) -> ReturnUser:
-    user = User(**user_data.model_dump())
+async def create_user(
+    session: AsyncSession, user_data: CreateUser
+) -> ReturnUser | None:
+    try:
+        user = User(**user_data.model_dump())
 
-    async with session.begin():
-        session.add(user)
-        await session.commit()
+        async with session.begin():
+            session.add(user)
+            await session.commit()
+    except IntegrityError:
+        return
 
     await session.refresh(user)
     return ReturnUser(**user.__dict__)

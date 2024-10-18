@@ -1,6 +1,12 @@
 from fastapi import FastAPI
 from core import settings, Base, database
-from api import user_router, analis_router, analis_value_router, analis_standart_router, schedule_router
+from api import (
+    user_router,
+    analis_router,
+    analis_value_router,
+    analis_standart_router,
+    schedule_router,
+)
 
 app = FastAPI()
 

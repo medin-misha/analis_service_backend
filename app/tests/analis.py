@@ -1,9 +1,22 @@
 from .fixtures import database, client
+import random
 from httpx import Response
 
 
 def test_create_analis(database):
-    analis: dict = {"name": "ПСА (PSA) - коефіцієнт", "unit": "%"}
+    user_data: dict = {
+        "name": f"{random.random()}",
+        "age": 16,
+        "weight": 65,
+        "gender": True,
+    }
+    create_user_response: Response = database.post("/users", json=user_data)
+    assert create_user_response.status_code == 200
+    analis: dict = {
+        "name": "ПСА (PSA) - коефіцієнт",
+        "unit": "%",
+        "user_id": create_user_response.json().get("id"),
+    }
     response: Response = database.post("/analis", json=analis)
     assert response.status_code == 200
     assert response.json().get("id")

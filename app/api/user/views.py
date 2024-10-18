@@ -30,7 +30,10 @@ async def get_user_by_id_view(
 async def create_user_view(
     user_data: CreateUser, session: AsyncSession = Depends(database.get_new_session)
 ) -> ReturnUser:
-    return await create_user(session=session, user_data=user_data)
+    object = await create_user(session=session, user_data=user_data)
+    if object is None:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT)
+    return object
 
 
 @router.patch("/{user_id}")

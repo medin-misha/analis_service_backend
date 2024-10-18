@@ -4,7 +4,7 @@ from .base import Base
 
 
 class User(Base):
-    name: Mapped[str]
+    name: Mapped[str] = mapped_column(unique=True)
     age: Mapped[int]
     weight: Mapped[int]
     gender: Mapped[bool]
