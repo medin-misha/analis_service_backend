@@ -13,4 +13,4 @@ class Settings(BaseSettings):
 
 settings = Settings()
 
-#settings.test_mode()
+settings.test_mode()
