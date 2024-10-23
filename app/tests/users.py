@@ -23,6 +23,17 @@ def test_get_client(database):
     assert response.status_code == 200
     assert response.json().get("id")
 
+def test_get_client_by_name(database):
+    user_id: int = 1
+    response_get_by_id: Response = database.get(f"/users/{user_id}")
+    assert response_get_by_id.status_code == 200
+
+    name: str = response_get_by_id.json().get("name")
+    response: Response = database.get(f"/users/name/{name}")
+    assert response.status_code == 200
+    assert response.json().get("id")
+
+
 
 def test_patch_client(database):
     value: dict = {"gender": False}
