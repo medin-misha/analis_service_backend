@@ -17,6 +17,10 @@ async def get_user_by_id(session: AsyncSession, user_id: int) -> ReturnUser | No
     result: Result = await session.execute(stmt)
     return result.scalar()
 
+async def get_user_by_user_name(session: AsyncSession, name: str) -> ReturnUser | None:
+    stmt = select(User).where(User.name == name)
+    result: Result = await session.execute(stmt)
+    return result.scalar()
 
 async def create_user(
     session: AsyncSession, user_data: CreateUser
