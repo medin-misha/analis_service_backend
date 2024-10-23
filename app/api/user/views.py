@@ -2,7 +2,14 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
 from core import database
-from .options import get_all_users, create_user, get_user_by_id, delete_user, patch_user, get_user_by_user_name
+from .options import (
+    get_all_users,
+    create_user,
+    get_user_by_id,
+    delete_user,
+    patch_user,
+    get_user_by_user_name,
+)
 from .schemas import CreateUser, ReturnUser, PatchUser
 
 
@@ -24,6 +31,7 @@ async def get_user_by_id_view(
     if object is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return object
+
 
 @router.get("/name/{user_name}")
 async def get_user_by_user_name_view(
