@@ -36,6 +36,14 @@ async def get_analis_by_name_and_user_id(
     return result.scalar()
 
 
+async def get_analis_by_user_id(
+    session: AsyncSession, user_id: int
+) -> List[ReturnAnalis]:
+    stmt = select(Analis).where(User.id == user_id).order_by(Analis.id)
+    result: Result = await session.execute(stmt)
+    return result.scalars().all()
+
+
 async def delete_analis(session: AsyncSession, analis_id: int) -> int | None:
     analis = await session.get(Analis, analis_id)
     if analis is None:

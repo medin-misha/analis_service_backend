@@ -38,14 +38,22 @@ def test_get_analis(database):
 def test_get_analis_by_name_and_user_id(database):
     analis_id: int = 1
     response_get_analis_by_id: Response = database.get(f"/analis/{analis_id}")
-    assert response_get_analis_by_id.status_code == 200
-
     analis_name: str = response_get_analis_by_id.json().get("name")
     user_id: int = response_get_analis_by_id.json().get("id")
 
     response: Response = database.get(f"/analis/name/{analis_name}/{user_id}")
     assert response.status_code == 200
     assert response.json().get("id")
+
+
+def test_get_analis_by_name_and_user_id(database):
+    analis_id: int = 1
+    response_get_analis_by_id: Response = database.get(f"/analis/{analis_id}")
+    user_id: int = response_get_analis_by_id.json().get("user_id")
+
+    response: Response = database.get(f"analis/user/{user_id}")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
 
 
 def test_delete_analis(database):

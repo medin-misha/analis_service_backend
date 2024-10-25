@@ -9,6 +9,7 @@ from .options import (
     get_analis_list,
     delete_analis,
     get_analis_by_name_and_user_id,
+    get_analis_by_user_id,
 )
 
 router = APIRouter(prefix="/analis", tags=["analis"])
@@ -50,6 +51,14 @@ async def get_analis_by_name_and_user_id_view(
     if object is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return object
+
+
+@router.get("/user/{user_id}")
+async def get_analis_by_user_id_view(
+    user_id: int,
+    session: AsyncSession = Depends(database.get_new_session),
+) -> List[ReturnAnalis]:
+    return await get_analis_by_user_id(session=session, user_id=user_id)
 
 
 @router.delete("/{analis_id}")
