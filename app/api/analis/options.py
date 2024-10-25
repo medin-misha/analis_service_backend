@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, Result
 from typing import List
-from core import Analis
+from core import Analis, User
 from .schemes import CreateAnalis, ReturnAnalis
 
 
@@ -24,6 +24,14 @@ async def get_analis_list(session: AsyncSession) -> List[ReturnAnalis]:
 
 async def get_analis(session: AsyncSession, analis_id: int) -> ReturnAnalis:
     stmt = select(Analis).where(Analis.id == analis_id).order_by(Analis.id)
+    result: Result = await session.execute(stmt)
+    return result.scalar()
+
+
+async def get_analis_by_name_and_user_id(
+    session: AsyncSession, name: str, user_id: int
+) -> ReturnAnalis:
+    stmt = select(Analis).where(Analis.name == name, User.id == user_id)
     result: Result = await session.execute(stmt)
     return result.scalar()
 
