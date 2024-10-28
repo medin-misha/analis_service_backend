@@ -30,12 +30,14 @@ async def get_analis_value(
     result: Result = await session.execute(stmt)
     return result.scalar()
 
+
 async def get_analis_value_by_analis_id(
     session: AsyncSession, analis_id: int
 ) -> list[ReturnAnalisValue] | None:
     stmt = select(AnalisValue).where(AnalisValue.analis_id == analis_id)
     result: Result = await session.execute(stmt)
     return result.scalars().all()
+
 
 async def patch_analis_value(
     session: AsyncSession, analis_id: int, analis_data: PatchAnalisValue

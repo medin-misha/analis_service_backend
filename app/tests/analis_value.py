@@ -26,11 +26,13 @@ def test_get_analis_value(database):
     assert response.status_code == 200
     assert response.json().get("id")
 
+
 def test_get_analis_value_by_analis_id(database):
     analis_value_id: int = 1
     response: Response = database.get(f"analis/value/analis/{analis_value_id}")
     assert response.status_code == 200
     assert isinstance(response.json(), list)
+
 
 def test_patch_analis_value(database):
     analis_value_data: dict = {
@@ -48,6 +50,7 @@ def test_patch_analis_value(database):
     )
     assert response.status_code == 200
     assert response.json().get("value") == analis_value_patch.get("value")
+
 
 def test_delete_analis_value(database):
     analis_value_id: int = 1

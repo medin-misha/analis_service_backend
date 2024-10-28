@@ -9,7 +9,7 @@ from .options import (
     get_analis_value_list,
     delete_analis_value,
     patch_analis_value,
-    get_analis_value_by_analis_id
+    get_analis_value_by_analis_id,
 )
 
 
@@ -40,11 +40,13 @@ async def get_analis_value_view(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return object
 
+
 @router.get("/analis/{analis_id}")
 async def get_analis_value_by_analis_id_view(
     analis_id: int, session: AsyncSession = Depends(database.get_new_session)
 ) -> List[ReturnAnalisValue]:
     return await get_analis_value_by_analis_id(session=session, analis_id=analis_id)
+
 
 @router.patch("/{analis_value_id}")
 async def patch_analis_value_view(
