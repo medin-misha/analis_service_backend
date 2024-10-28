@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, Result
+from sqlalchemy import select, Result, delete
 from typing import List
-from core import Analis, User
+from core import Analis, User, AnalisValue
 from .schemes import CreateAnalis, ReturnAnalis
 
 
@@ -46,8 +46,10 @@ async def get_analis_by_user_id(
 
 async def delete_analis(session: AsyncSession, analis_id: int) -> int | None:
     analis = await session.get(Analis, analis_id)
+    stmt = delete(AnalisValue).where(AnalisValue.analis_id == analis_id)
     if analis is None:
         return
     await session.delete(analis)
+    await session.execute(stmt)
     await session.commit()
     return 204

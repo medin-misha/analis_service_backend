@@ -9,6 +9,7 @@ from .options import (
     get_analis_value_list,
     delete_analis_value,
     patch_analis_value,
+    get_analis_value_by_analis_id
 )
 
 
@@ -30,32 +31,37 @@ async def get_analis_value_list_view(
     return await get_analis_value_list(session=session)
 
 
-@router.get("/{analis_id}")
+@router.get("/{analis_value_id}")
 async def get_analis_value_view(
-    analis_id: int, session: AsyncSession = Depends(database.get_new_session)
+    analis_value_id: int, session: AsyncSession = Depends(database.get_new_session)
 ) -> ReturnAnalisValue:
-    object = await get_analis_value(session=session, analis_id=analis_id)
+    object = await get_analis_value(session=session, analis_id=analis_value_id)
     if object is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return object
 
+@router.get("/analis/{analis_id}")
+async def get_analis_value_by_analis_id_view(
+    analis_id: int, session: AsyncSession = Depends(database.get_new_session)
+) -> List[ReturnAnalisValue]:
+    return await get_analis_value_by_analis_id(session=session, analis_id=analis_id)
 
-@router.patch("/{analis_id}")
-async def analis_value_view(
-    analis_id: int,
+@router.patch("/{analis_value_id}")
+async def patch_analis_value_view(
+    analis_value_id: int,
     analis_data: PatchAnalisValue,
     session: AsyncSession = Depends(database.get_new_session),
 ) -> ReturnAnalisValue:
     return await patch_analis_value(
-        session=session, analis_data=analis_data, analis_id=analis_id
+        session=session, analis_data=analis_data, analis_id=analis_value_id
     )
 
 
-@router.delete("/{analis_id}")
+@router.delete("/{analis_value_id}")
 async def analis_value_view(
-    analis_id: int, session: AsyncSession = Depends(database.get_new_session)
+    analis_value_id: int, session: AsyncSession = Depends(database.get_new_session)
 ):
-    object = await delete_analis_value(session=session, analis_id=analis_id)
+    object = await delete_analis_value(session=session, analis_id=analis_value_id)
     if object is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     raise HTTPException(status_code=status.HTTP_204_NO_CONTENT)
