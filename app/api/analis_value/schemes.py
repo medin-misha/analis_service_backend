@@ -1,11 +1,11 @@
 from pydantic import BaseModel, PositiveInt
-from datetime import date
-
+from typing import Optional
+from datetime import date as Date
 
 class BaseAnalisValue(BaseModel):
     user_id: PositiveInt
     analis_id: PositiveInt
-    date: date
+    date: Date
     value: str
 
 
@@ -13,11 +13,11 @@ class CreateAnalisValue(BaseAnalisValue):
     pass
 
 
-class PatchAnalisValue(BaseAnalisValue):
+class PatchAnalisValue(BaseModel):
     user_id: PositiveInt | None = None
     analis_id: PositiveInt | None = None
     value: str | None = None
-    date: date = None
+    date: Date | None = None
 
 
 class ReturnAnalisValue(BaseAnalisValue):
