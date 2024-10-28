@@ -26,16 +26,28 @@ def test_get_analis_value(database):
     assert response.status_code == 200
     assert response.json().get("id")
 
+def test_get_analis_value_by_analis_id(database):
+    analis_value_id: int = 1
+    response: Response = database.get(f"analis/value/analis/{analis_value_id}")
+    assert response.status_code == 200
+    assert isinstance(response.json(), list)
 
 def test_patch_analis_value(database):
-    analis_value_id: int = 1
+    analis_value_data: dict = {
+        "user_id": 1,
+        "analis_id": 1,
+        "value": "50",
+        "date": "2024-10-19",
+    }
+    response: Response = database.post("/analis/value/", json=analis_value_data)
+
+    analis_value_id: int = response.json().get("id")
     analis_value_patch: dict = {"value": "51"}
     response: Response = database.patch(
         f"/analis/value/{analis_value_id}", json=analis_value_patch
     )
     assert response.status_code == 200
     assert response.json().get("value") == analis_value_patch.get("value")
-
 
 def test_delete_analis_value(database):
     analis_value_id: int = 1
