@@ -4,7 +4,6 @@ services:
     build:
       context: .
       dockerfile: ./Dockerfile
-    volumes:
-      - ./analis_db/:/app/database
     ports:
       - 8000:8000
+  
